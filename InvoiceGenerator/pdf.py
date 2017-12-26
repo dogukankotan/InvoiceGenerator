@@ -43,7 +43,6 @@ class BaseInvoice(object):
     def gen(self, filename):
         pass
 
-
 class NumberedCanvas(Canvas):
     def __init__(self, *args, **kwargs):
         Canvas.__init__(self, *args, **kwargs)
@@ -119,9 +118,10 @@ class SimpleInvoice(BaseInvoice):
         #self.pdf.setFillColorRGB(0, 0, 0)
 
         self.pdf.showPage()
-        self.pdf.save()
+        #self.pdf.save()
         if self.qr_builder:
             self.qr_builder.destroy()
+        return self.pdf.getpdfdata()
 
     #############################################################
     ## Draw methods

@@ -21,9 +21,10 @@ Example
 
 Usage::
 
-	import os
+    import os
     from InvoiceGenerator.api import Invoice, Item, Client, Provider, Creator
     from InvoiceGenerator.pdf import SimpleInvoice
+    from tempfile import NamedTemporaryFile
 
     # choose en as language
     os.environ["INVOICE_LANG"] = "tr"
@@ -49,6 +50,8 @@ Usage::
     invoice.number = '205123123112'
     invoice.add_item(Item(1, 1.24, description="Ödeme Hizmeti Komisyonu"))
 
+    tmp_file = NamedTemporaryFile(delete=False)
     pdf = SimpleInvoice(invoice)
-    pdf.gen("/Users/workif/PycharmProjects/InvoiceGenerator/test.pdf")
+    a = pdf.gen(tmp_file.name)
+    print(a)
 
