@@ -121,7 +121,6 @@ class SimpleInvoice(BaseInvoice):
         self.pdf.save()
         if self.qr_builder:
             self.qr_builder.destroy()
-        return self.pdf.getpdfdata()
 
     #############################################################
     ## Draw methods

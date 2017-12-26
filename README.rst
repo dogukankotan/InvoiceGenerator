@@ -52,6 +52,5 @@ Usage::
 
     tmp_file = NamedTemporaryFile(delete=False)
     pdf = SimpleInvoice(invoice)
-    a = pdf.gen(tmp_file.name)
-    print(a)
+    pdf.gen(tmp_file.name)
 
