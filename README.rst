@@ -6,64 +6,49 @@ InvoiceGenerator
 
 This is library to generate a simple PDF invoice. It's based on ReportLab.
 
+THIS IS A CUSTOM FORK!
+InvoiceGenerator for İşin Başı Reklam. Transformed to Receipts. Added TR locale.
+
 Installation
 ============
 
 Run this command as root::
 
-	pip install InvoiceGenerator
-
-If you want upgrade to new version, add --upgrade flag.::
-
-	pip install InvoiceGenerator --upgrade
-
-You can use setup.py from GitHub repository too.::
-
-	python setup.py install
-
+	pip install git+https://github.com/dogukankotan/InvoiceGenerator.git
 
 Example
 =======
 
 Usage::
 
-	from tempfile import NamedTemporaryFile
-
-	from InvoiceGenerator.api import Invoice, Item, Client, Provider, Creator
-	from InvoiceGenerator.pdf import SimpleInvoice
+	import os
+    from InvoiceGenerator.api import Invoice, Item, Client, Provider, Creator
+    from InvoiceGenerator.pdf import SimpleInvoice
 
     # choose en as language
-    os.environ["INVOICE_LANG"] = "en"
+    os.environ["INVOICE_LANG"] = "tr"
 
-	client = Client('Client company')
-	provider = Provider('My company', bank_account='2600420569/2010')
-	creator = Creator('John Doe')
+    client = Client('İşin Başı Reklam Bilgi Teknolojileri ve Ticaret A.Ş')
+    client.address = 'GÜLBAHÇE GÜLBAHÇE CAD.NO:1/17'
+    client.city = 'URLA/İZMİR'
+    client.zip = '35000'
+    client.vat_id = '4820575342'
+    client.ir = 'Urla'
+    provider = Provider('İşin Başı Reklam Bilgi Teknolojileri ve Ticaret A.Ş')
+    provider.address = 'GÜLBAHÇE GÜLBAHÇE CAD.NO:1/17'
+    provider.city = 'URLA/İZMİR'
+    provider.zip = '35000'
+    provider.vat_id = '4820575342'
+    provider.ir = 'Urla'
+    creator = Creator('Workif')
 
-	invoice = Invoice(client, provider, creator)
-	invoice.currency_locale = 'en_US.UTF-8'
-	invoice.add_item(Item(32, 600, description="Item 1"))
-	invoice.add_item(Item(60, 50, description="Item 2", tax=10))
-	invoice.add_item(Item(50, 60, description="Item 3", tax=5))
-	invoice.add_item(Item(5, 600, description="Item 4", tax=50))
+    invoice = Invoice(client, provider, creator)
+    invoice.currency_locale = 'tr_TR.UTF-8'
+    invoice.currency = '₺'
+    invoice.date = '10-12-2017'
+    invoice.number = '205123123112'
+    invoice.add_item(Item(1, 1.24, description="Ödeme Hizmeti Komisyonu"))
 
-	tmp_file = NamedTemporaryFile(delete=False)
-	pdf = SimpleInvoice(invoice)
-	pdf.gen(tmp_file.name, generate_qr_code=True)
+    pdf = SimpleInvoice(invoice)
+    pdf.gen("/Users/workif/PycharmProjects/InvoiceGenerator/test.pdf")
 
-Hacking
-=======
-
-Fork the `repository on github <https://github.com/creckx/InvoiceGenerator>`_ and
-write code. Make sure to add tests covering your code under `/tests/`. You can
-run tests using::
-
-    python setup.py test
-
-Then propose your patch via a pull request.
-
-Documentation is generated from `doc/source/` using `Sphinx
-<http://sphinx-doc.org/>`_::
-
-    python setup.py build_sphinx
-
-Then head to `doc/build/html/index.html`.

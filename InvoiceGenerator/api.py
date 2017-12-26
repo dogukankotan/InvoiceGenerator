@@ -44,10 +44,10 @@ class Address(UnicodeProperty):
             u'%s %s' % (self.zip, self.city)
             ]
         if self.vat_id:
-            address_line.append(_(u'Vat in: %s') % self.vat_id)
+            address_line.append('V.No: %s' % self.vat_id)
 
         if self.ir:
-            address_line.append(_(u'IR: %s') % self.ir)
+            address_line.append('V.D.: %s' % self.ir)
 
         return address_line
 

@@ -108,11 +108,11 @@ class SimpleInvoice(BaseInvoice):
 
         # Texty
         self.drawMain()
-        self.drawTitle()
+        #self.drawTitle()
         self.drawProvider(self.TOP - 10, self.LEFT + 3)
         self.drawClient(self.TOP - 35, self.LEFT + 91)
-        self.drawPayment(self.TOP - 47, self.LEFT + 3)
-        self.drawQR(self.TOP - 39.4, self.LEFT + 61, 75.0)
+        #self.drawDEKONT(self.TOP -2, self.LEFT + 20)
+        #self.drawQR(self.TOP - 39.4, self.LEFT + 61, 75.0)
         self.drawDates(self.TOP - 10, self.LEFT + 91)
         self.drawItems(self.TOP - 80, self.LEFT)
 
@@ -134,6 +134,7 @@ class SimpleInvoice(BaseInvoice):
 
     def drawTitle(self):
         # Up line
+        self.pdf.setFont('DejaVu', 12)
         self.pdf.drawString(self.LEFT*mm, self.TOP*mm, self.invoice.title)
         if not self.invoice.use_tax:
             self.pdf.drawString((self.LEFT + 90) * mm,
@@ -156,10 +157,10 @@ class SimpleInvoice(BaseInvoice):
         path.lineTo((self.LEFT + 88) * mm, (self.TOP - 68) * mm)
         self.pdf.drawPath(path, True, True)
 
-        path = self.pdf.beginPath()
-        path.moveTo(self.LEFT * mm, (self.TOP - 39) * mm)
-        path.lineTo((self.LEFT + 88) * mm, (self.TOP - 39) * mm)
-        self.pdf.drawPath(path, True, True)
+        #path = self.pdf.beginPath()
+        #path.moveTo(self.LEFT * mm, (self.TOP - 39) * mm)
+        #path.lineTo((self.LEFT + 88) * mm, (self.TOP - 39) * mm)
+        #self.pdf.drawPath(path, True, True)
 
         path = self.pdf.beginPath()
         path.moveTo((self.LEFT + 88) * mm, (self.TOP - 27) * mm)
@@ -187,7 +188,7 @@ class SimpleInvoice(BaseInvoice):
 
     def drawProvider(self, TOP, LEFT):
         self.pdf.setFont('DejaVu', 12)
-        self.pdf.drawString(LEFT * mm, TOP * mm, _(u'Provider'))
+        #self.pdf.drawString(LEFT * mm, TOP * mm, _(u'Provider'))
         self.pdf.setFont('DejaVu', 8)
 
         text = self.pdf.beginText((LEFT + 2) * mm, (TOP - 6) * mm)
@@ -233,6 +234,10 @@ class SimpleInvoice(BaseInvoice):
                 '%s: %s' % (_(u'SWIFT'), self.invoice.swift))
         text.textLines(lines)
         self.pdf.drawText(text)
+
+    def drawDEKONT(self, TOP, LEFT):
+        self.pdf.setFont('DejaVu-Bold', 15)
+        self.pdf.drawString(LEFT * mm, (TOP + 2) * mm, 'DEKONT')
 
     def drawItemsHeader(self,  TOP,  LEFT):
         path = self.pdf.beginPath()
@@ -392,7 +397,7 @@ class SimpleInvoice(BaseInvoice):
         else:
             self.pdf.rect(LEFT * mm, (TOP - i - 11) * mm, (LEFT + 156) * mm, (i + 13) * mm, stroke=True, fill=False) #140,142
 
-        self.drawCreator(TOP - i - 20, self.LEFT + 98)
+        self.drawInfo(TOP - i - 2, self.LEFT)
 
     def drawCreator(self, TOP, LEFT):
         height = 20*mm
@@ -408,6 +413,13 @@ class SimpleInvoice(BaseInvoice):
 
         self.pdf.drawString((LEFT + 10) * mm, (TOP - 5) * mm - height, '%s: %s' % (_(u'Creator'), self.invoice.creator.name))
 
+    def drawInfo(self, TOP, LEFT):
+        height = 20*mm
+        self.pdf.setFont('DejaVu', 7)
+        self.pdf.drawString((LEFT) * mm, (TOP - 5) * mm - height, 'İşbu dekont Kuruluşumuz kayıtları çerçevesinde Kuruluşumuzca iletildiği hali ile geçerli olup, dekont üzerindeki bilgiler ile Kuruluşumuz')
+        self.pdf.drawString((LEFT) * mm, (TOP - 10) * mm - height, 'kayıtlarının uyuşmaması veya Kuruluşumuzca gönderilen hali ile farklılık arz etmesi halinde, Kuruluşumuz kayıtları esas alınacaktır.')
+        self.pdf.drawString((LEFT) * mm, (TOP - 15) * mm - height, 'Dekonta konu işleme dair iddiaların ispatında Kuruluş kayıtları asıldır.')
+
     def drawQR(self, TOP, LEFT, size=130.0):
         if self.qr_builder:
             qr_filename = self.qr_builder.filename
@@ -417,9 +429,12 @@ class SimpleInvoice(BaseInvoice):
                                size, height)
 
     def drawDates(self, TOP, LEFT):
-        self.pdf.setFont('DejaVu', 10)
         top = TOP + 1
         items = []
+        self.pdf.setFont('DejaVu', 15)
+        self.pdf.drawString(LEFT * mm, TOP * mm, 'DEKONT')
+        top += -6
+        self.pdf.setFont('DejaVu', 10)
         if self.invoice.date and self.invoice.use_tax:
             items.append((LEFT * mm, '%s: %s' % (_(u'Date of exposure taxable invoice'), self.invoice.date)))
         elif self.invoice.date and not self.invoice.use_tax:
@@ -429,6 +444,8 @@ class SimpleInvoice(BaseInvoice):
         if self.invoice.taxable_date:
             items.append((LEFT * mm, '%s: %s' % (_(u'Taxable date'),
                         self.invoice.taxable_date)))
+        if self.invoice.number:
+            items.append((LEFT * mm, '%s: %s' % (_(u'Date of exposure taxable invoice'), self.invoice.number)))
 
         if self.invoice.paytype:
             items.append((LEFT * mm, '%s: %s' % (_(u'Paytype'),
