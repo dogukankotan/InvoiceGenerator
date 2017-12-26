@@ -118,7 +118,7 @@ class SimpleInvoice(BaseInvoice):
         #self.pdf.setFillColorRGB(0, 0, 0)
 
         self.pdf.showPage()
-        #self.pdf.save()
+        self.pdf.save()
         if self.qr_builder:
             self.qr_builder.destroy()
         return self.pdf.getpdfdata()
